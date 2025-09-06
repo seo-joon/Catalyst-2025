@@ -2,4 +2,5 @@ fastapi
 uvicorn
 feedparser
 python-dateutil
+python-multipart
 itsdangerous
