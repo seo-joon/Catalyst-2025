@@ -97,32 +97,35 @@ def serve_learn(request: Request):
 
 # --- login (admin/admin; newuser always to onboarding) ---
 @app.post("/auth/login")
-async def auth_login(
-    request: Request,
-    username: Optional[str] = Form(None),
-    password: Optional[str] = Form(None),
-):
-    if username is None and password is None:
-        # Accept JSON payloads too (tools / Postman)
+async def auth_login(request: Request):
+    username = password = ""
+    ctype = request.headers.get("content-type", "")
+    if "application/x-www-form-urlencoded" in ctype:
+        body = (await request.body()).decode("utf-8", "ignore")
+        data = {k: v[0] for k, v in parse_qs(body).items()}
+        username = (data.get("username") or "").strip()
+        password = (data.get("password") or "").strip()
+    else:
+        # Fallback: JSON payloads (Postman etc.)
         try:
             data = await request.json()
         except Exception:
             data = {}
         username = (data.get("username") or "").strip()
         password = (data.get("password") or "").strip()
-    else:
-        username = (username or "").strip()
-        password = (password or "").strip()
 
+    # Special rule: newuser is always sent to onboarding (but is logged in)
     if username.lower() == "newuser":
         request.session["user"] = {"login": username, "name": username}
         return RedirectResponse("/onboarding.html", status_code=303)
 
+    # Fixed creds
     if username == "admin" and password == "terry":
         request.session["user"] = {"login": username, "name": username}
         return RedirectResponse("/learn.html", status_code=303)
 
     return RedirectResponse("/login.html?error=1", status_code=303)
+
 
 @app.post("/logout")
 @app.get("/logout")
