@@ -93,8 +93,6 @@ def serve_learn(request: Request):
     u = request.session.get("user")
     if not u:
         return RedirectResponse("/login.html", status_code=302)
-    if u.get("login", "").lower() == "newuser":
-        return RedirectResponse("/onboarding.html", status_code=302)
     return FileResponse(str(STATIC_DIR / "learn.html"))
 
 # When you visit /login directly:
