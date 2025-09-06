@@ -3,48 +3,76 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>benkyou</title>
+  <title>benkyou | concepts realised</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen bg-slate-50 text-slate-800">
   <header class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b">
     <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
       <h1 class="text-xl font-extrabold">benkyou.</h1>
-      <nav class="text-sm text-slate-600">RSS-based · Lightweight</nav>
+      <nav class="text-xs text-slate-600">Connecting classroom concepts to events happening today.</nav>
     </div>
   </header>
 
-  <main class="max-w-5xl mx-auto px-4 py-6 space-y-6">
-    <section class="grid md:grid-cols-4 gap-3 items-end">
-      <div class="md:col-span-1">
-        <label class="block text-sm font-semibold">Track</label>
-        <select id="track" class="mt-1 w-full rounded-lg border p-2">
-          <option value="all">All</option>
-          <option value="commerce">Commerce</option>
-          <option value="arts">Arts</option>
-        </select>
-      </div>
-      <div class="md:col-span-2">
-        <label class="block text-sm font-semibold">Concept</label>
-        <select id="concept" class="mt-1 w-full rounded-lg border p-2">
-          <option value="">(Any)</option>
-        </select>
-      </div>
-      <div class="md:col-span-1">
-        <label class="block text-sm font-semibold">Look‑back (days)</label>
-        <input id="days" type="number" value="7" min="1" max="60" class="mt-1 w-full rounded-lg border p-2" />
-      </div>
-      <div class="md:col-span-4 flex gap-2">
-        <button id="refresh" class="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold">Fetch</button>
-        <button id="clear" class="px-4 py-2 rounded-lg border">Clear</button>
-      </div>
-    </section>
+  <section class="border-b bg-white/80 backdrop-blur">
+    <div class="max-w-5xl mx-auto px-4 py-3">
+      <div class="grid gap-3 md:grid-cols-12 items-end">
+        <div class="md:col-span-3">
+          <label class="block text-xs font-medium text-slate-600">Subject</label>
+          <select id="track" class="mt-1 w-full rounded-md border p-2 text-sm">
+            <option value="all">All</option>
+            <option value="commerce">Commerce</option>
+            <option value="arts">Arts</option>
+          </select>
+        </div>
+        <div class="md:col-span-3">
+          <label class="block text-xs font-medium text-slate-600">Look-back (days)</label>
+          <input id="days" type="number" value="7" min="1" max="365" class="mt-1 w-full rounded-md border p-2 text-sm" />
+        </div>
 
+        <!-- Concepts (floating popover) -->
+        <div class="md:col-span-6 relative">
+          <button id="conceptsToggle" type="button"
+                  class="mt-6 inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm bg-white"
+                  aria-haspopup="dialog" aria-expanded="false">
+            Concepts (multi-select)
+            <span class="text-slate-500">•</span>
+            <span id="selectedCount" class="text-slate-500">0 selected</span>
+          </button>
+
+          <!-- Popover -->
+          <div id="conceptPopover"
+              class="absolute right-0 top-full mt-2 z-50 hidden w-[min(90vw,640px)] max-h-[60vh] overflow-auto
+                      rounded-lg border bg-white shadow-xl">
+            <div class="flex items-center justify-between gap-2 border-b px-3 py-2">
+              <div class="flex gap-2">
+                <button type="button" id="selectAll"  class="px-2 py-1 rounded border text-xs">Select all</button>
+                <button type="button" id="selectNone" class="px-2 py-1 rounded border text-xs">None</button>
+              </div>
+              <button type="button" id="conceptsClose" class="px-2 py-1 rounded border text-xs">✕</button>
+            </div>
+
+            <div id="concepts"
+                class="p-3 grid gap-2 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 text-sm leading-tight">
+              <!-- checkboxes injected by main.js -->
+            </div>
+          </div>
+        </div>
+
+
+        <div class="md:col-span-12 flex gap-2">
+          <button id="refresh" type="button" class="px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-semibold">Fetch</button>
+          <button id="clear" type="button" class="px-4 py-2 rounded-md border text-sm">Clear</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="max-w-5xl mx-auto px-4 py-6 space-y-6">
     <section>
       <h2 class="text-lg font-bold mb-3">Results</h2>
-      <div id="results" class="grid gap-3"></div>
+      <div id="results" class="grid gap-3"><!-- cards injected by main.js --></div>
     </section>
-
     <section class="text-sm text-slate-500">
       <p>Sources: Reuters Business, ACCC, RBA. Extendable.</p>
     </section>

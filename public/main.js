@@ -1,37 +1,68 @@
-const trackEl = document.getElementById('track');
-const conceptEl = document.getElementById('concept');
-const daysEl = document.getElementById('days');
-const resultsEl = document.getElementById('results');
-const refreshBtn = document.getElementById('refresh');
-const clearBtn = document.getElementById('clear');
+const trackEl      = document.getElementById('track');
+const conceptsWrap = document.getElementById('concepts');
+const daysEl       = document.getElementById('days');
+const resultsEl    = document.getElementById('results');
+const refreshBtn   = document.getElementById('refresh');
+const clearBtn     = document.getElementById('clear');
+
+const conceptsToggle = document.getElementById('conceptsToggle');
+const conceptsPopover= document.getElementById('conceptPopover');
+const conceptsClose  = document.getElementById('conceptsClose');
+const selectAllBtn   = document.getElementById('selectAll');
+const selectNoneBtn  = document.getElementById('selectNone');
+const selectedCountEl= document.getElementById('selectedCount');
+
+function openPopover() {
+  conceptsPopover.classList.remove('hidden');
+  conceptsToggle.setAttribute('aria-expanded', 'true');
+}
+function closePopover() {
+  conceptsPopover.classList.add('hidden');
+  conceptsToggle.setAttribute('aria-expanded', 'false');
+}
+function togglePopover() {
+  conceptsPopover.classList.contains('hidden') ? openPopover() : closePopover();
+}
+
+function updateSelectedCount() {
+  const n = document.querySelectorAll('input[name="concept"]:checked').length;
+  if (selectedCountEl) selectedCountEl.textContent = `${n} selected`;
+}
 
 async function loadConcepts() {
   const t = trackEl.value;
   const qs = t === 'all' ? '' : `?track=${t}`;
   const res = await fetch(`/api/concepts${qs}`);
   const data = await res.json();
-  conceptEl.innerHTML = '<option value="">(Any)</option>' +
-    data.concepts.map(c => `<option value="${c}">${c.replaceAll('_',' ')}</option>`).join('');
+  conceptsWrap.innerHTML = data.concepts.map(c => `
+    <label class="flex items-center gap-2 text-sm">
+      <input type="checkbox" name="concept" value="${c}" class="accent-blue-600">
+      <span>${c.replaceAll('_',' ')}</span>
+    </label>
+  `).join('');
+  updateSelectedCount();
+}
+
+function getSelectedConcepts() {
+  return Array.from(document.querySelectorAll('input[name="concept"]:checked'))
+              .map(el => el.value);
 }
 
 async function fetchExamples() {
   const params = new URLSearchParams();
   const t = trackEl.value;
   if (t !== 'all') params.set('track', t);
-  const c = conceptEl.value;
-  if (c) params.set('concept', c);
+  getSelectedConcepts().forEach(c => params.append('concept', c));
   const d = parseInt(daysEl.value || '7', 10);
-  params.set('days', Math.min(60, Math.max(1, d)));
+  params.set('days', String(Math.min(365, Math.max(1, d))));
   params.set('limit', '30');
 
   resultsEl.innerHTML = '<div class="text-slate-500">Loading…</div>';
   const res = await fetch(`/api/examples?${params.toString()}`);
   const items = await res.json();
-  if (!items.length) {
-    resultsEl.innerHTML = '<div class="text-slate-500">No matches. Try another concept or increase days.</div>';
-    return;
-  }
-  resultsEl.innerHTML = items.map(renderCard).join('');
+  resultsEl.innerHTML = items.length
+    ? items.map(renderCard).join('')
+    : '<div class="text-slate-500">No matches. Try more concepts or increase days.</div>';
 }
 
 function renderCard(item) {
@@ -53,9 +84,34 @@ function escapeHtml(str) {
   return str.replace(/[&<>"]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s]));
 }
 
-trackEl.addEventListener('change', () => loadConcepts());
-refreshBtn.addEventListener('click', () => fetchExamples());
+// Events
+trackEl.addEventListener('change', loadConcepts);
+refreshBtn.addEventListener('click', () => { closePopover(); fetchExamples(); });
 clearBtn.addEventListener('click', () => { resultsEl.innerHTML = ''; });
+
+conceptsToggle.addEventListener('click', (e) => { e.stopPropagation(); togglePopover(); });
+conceptsClose.addEventListener('click', (e) => { e.preventDefault(); closePopover(); });
+document.addEventListener('click', (e) => {
+  if (!conceptsPopover.classList.contains('hidden') &&
+      !conceptsPopover.contains(e.target) &&
+      !conceptsToggle.contains(e.target)) {
+    closePopover();
+  }
+});
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePopover(); });
+
+// Delegate changes inside the popover to keep count live
+conceptsWrap.addEventListener('change', (e) => {
+  if (e.target && e.target.name === 'concept') updateSelectedCount();
+});
+selectAllBtn.addEventListener('click', () => {
+  document.querySelectorAll('input[name="concept"]').forEach(el => el.checked = true);
+  updateSelectedCount();
+});
+selectNoneBtn.addEventListener('click', () => {
+  document.querySelectorAll('input[name="concept"]').forEach(el => el.checked = false);
+  updateSelectedCount();
+});
 
 // init
 await loadConcepts();

@@ -6,7 +6,7 @@ from dateutil import parser as dtparse
 from datetime import datetime, timedelta, timezone
 import re
 
-app = FastAPI(title="benkyou")
+app = FastAPI(title="benkyou.")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -73,12 +73,13 @@ def list_concepts(track: str | None = Query(None, description="commerce or arts"
 
 @app.get("/api/examples")
 def examples(
-    concept: str | None = Query(None, description="filter to a specific concept id"),
+    concept: list[str] | None = Query(None, description="one or more concept ids"),
     track: str | None = Query(None, description="commerce or arts"),
-    days: int = Query(7, ge=1, le=60),
+    days: int = Query(7, ge=1, le=365),
     limit: int = Query(30, ge=1, le=100),
 ):
     cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+    selected = set(concept or [])
     results = []
     for source_name, feed_url in SOURCES:
         try:
@@ -92,7 +93,7 @@ def examples(
             concepts = match_concepts(text)
             if track in ("commerce", "arts"):
                 concepts = [c for c in concepts if c in CONCEPTS[track]]
-            if concept and concept not in concepts:
+            if selected and not set(concepts).issuperset(selected):
                 continue
             # parse date if available
             published_raw = e.get("published") or e.get("updated") or ""
