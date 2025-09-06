@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>benkyou</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800">
+  <header class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      <h1 class="text-xl font-extrabold">benkyou.</h1>
+      <nav class="text-sm text-slate-600">RSS-based · Lightweight</nav>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 py-6 space-y-6">
+    <section class="grid md:grid-cols-4 gap-3 items-end">
+      <div class="md:col-span-1">
+        <label class="block text-sm font-semibold">Track</label>
+        <select id="track" class="mt-1 w-full rounded-lg border p-2">
+          <option value="all">All</option>
+          <option value="commerce">Commerce</option>
+          <option value="arts">Arts</option>
+        </select>
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-sm font-semibold">Concept</label>
+        <select id="concept" class="mt-1 w-full rounded-lg border p-2">
+          <option value="">(Any)</option>
+        </select>
+      </div>
+      <div class="md:col-span-1">
+        <label class="block text-sm font-semibold">Look‑back (days)</label>
+        <input id="days" type="number" value="7" min="1" max="60" class="mt-1 w-full rounded-lg border p-2" />
+      </div>
+      <div class="md:col-span-4 flex gap-2">
+        <button id="refresh" class="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold">Fetch</button>
+        <button id="clear" class="px-4 py-2 rounded-lg border">Clear</button>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-lg font-bold mb-3">Results</h2>
+      <div id="results" class="grid gap-3"></div>
+    </section>
+
+    <section class="text-sm text-slate-500">
+      <p>Sources: Reuters Business, ACCC, RBA. Extendable.</p>
+    </section>
+  </main>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>
