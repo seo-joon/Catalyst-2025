@@ -1,7 +1,7 @@
 # CISSA: Catalyst
 
 Package installation:
-- pip install fastapi uvicorn[standard] feedparser python-dateutil itsdangerous
+- pip install fastapi uvicorn[standard] feedparser python-dateutil python-multipart itsdangerous
 
 Local testing:
 - uvicorn main:app --reload --port 8000
