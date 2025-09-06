@@ -6,5 +6,7 @@
       "includeFiles": "public/**"
     }
   },
-  "routes": [{ "src": "/(.*)", "dest": "api/index.py" }]
+  "routes": [
+    { "src": "/(.*)", "dest": "api/index.py" }
+  ]
 }
