@@ -25,23 +25,23 @@ SOURCES = [
 # --- Concept taxonomy: commerce + arts ---
 CONCEPTS = {
     "commerce": {
-        "oligopoly": ["cartel", "price fixing", "collusion", "duopoly", "oligopoly", "ACCC", "OPEC", "petrol", "fuel"],
-        "monopoly": ["monopoly", "dominant position", "market power", "antitrust", "competition watchdog", "Section 46"],
-        "mergers_and_acquisitions": ["merger", "acquisition", "takeover", "M&A", "scheme of arrangement", "bid"],
-        "inflation": ["inflation", "CPI", "consumer price index", "price pressures", "disinflation", "headline inflation"],
-        "monetary_policy": ["interest rate", "cash rate", "RBA", "rate hike", "rate cut", "QE", "QT", "policy decision"],
-        "fiscal_policy": ["budget deficit", "surplus", "spending", "tax cut", "stimulus", "fiscal"],
-        "externalities": ["externality", "pollution", "carbon", "emissions", "tax credit", "subsidy"],
-        "asymmetric_information": ["information asymmetry", "insider", "adverse selection", "moral hazard"],
-        "price_discrimination": ["price discrimination", "dynamic pricing", "surge pricing", "loyalty pricing"],
-        "competition_policy": ["ACCC", "antitrust", "competition authority", "undertaking", "court-enforceable"],
-        "game_theory": ["tacit collusion", "Nash equilibrium", "strategic", "coordination", "prisoners' dilemma"],
+        "Oligopoly": ["cartel", "price fixing", "collusion", "duopoly", "oligopoly", "ACCC", "OPEC", "petrol", "fuel"],
+        "Monopoly": ["monopoly", "dominant position", "market power", "antitrust", "competition watchdog", "Section 46"],
+        "Mergers_and_Acquisitions": ["merger", "acquisition", "takeover", "M&A", "scheme of arrangement", "bid"],
+        "Inflation": ["inflation", "CPI", "consumer price index", "price pressures", "disinflation", "headline inflation"],
+        "Monetary_Policy": ["interest rate", "cash rate", "RBA", "rate hike", "rate cut", "QE", "QT", "policy decision"],
+        "Fiscal_Policy": ["budget deficit", "surplus", "spending", "tax cut", "stimulus", "fiscal"],
+        "Externalities": ["externality", "pollution", "carbon", "emissions", "tax credit", "subsidy"],
+        "Asymmetric_Information": ["information asymmetry", "insider", "adverse selection", "moral hazard"],
+        "Price_Discrimination": ["price discrimination", "dynamic pricing", "surge pricing", "loyalty pricing"],
+        "Competition_Policy": ["ACCC", "antitrust", "competition authority", "undertaking", "court-enforceable"],
+        "Game_Theory": ["tacit collusion", "Nash equilibrium", "strategic", "coordination", "prisoners' dilemma"],
     },
     "arts": {
-        "copyright": ["copyright", "intellectual property", "royalties", "licensing", "fair use", "IP"],
-        "censorship": ["censor", "ban", "content moderation", "free speech", "classification board"],
-        "cultural_policy": ["arts funding", "grant", "Creative Australia", "cultural policy", "museum"],
-        "labour_unions": ["strike", "union", "industrial action", "actors guild"],
+        "Copyright": ["copyright", "intellectual property", "royalties", "licensing", "fair use", "IP"],
+        "Censorship": ["censor", "ban", "content moderation", "free speech", "classification board"],
+        "Cultural_policy": ["arts funding", "grant", "Creative Australia", "cultural policy", "museum"],
+        "Labour_Unions": ["strike", "union", "industrial action", "actors guild"],
     },
 }
 

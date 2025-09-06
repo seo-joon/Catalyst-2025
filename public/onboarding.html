@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>benkyou — Onboarding</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800">
+  <header class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b">
+    <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
+      <h1 class="text-xl font-extrabold">benkyou.</h1>
+      <nav class="text-xs text-slate-600">Let’s set your defaults</nav>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 py-6 space-y-6">
+    <!-- Step 1: Subject & look-back -->
+    <section class="rounded-xl border bg-white p-4">
+      <h2 class="font-bold mb-3">Step 1 — Basics</h2>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <label class="text-sm">
+          <span class="block text-slate-600 text-xs mb-1">Subject</span>
+          <select id="obTrack" class="w-full rounded-md border p-2 text-sm">
+            <option value="commerce">Commerce</option>
+            <option value="arts">Arts</option>
+            <option value="all">All</option>
+          </select>
+        </label>
+        <label class="text-sm">
+          <span class="block text-slate-600 text-xs mb-1">Default look-back (days)</span>
+          <input id="obDays" type="number" value="14" min="1" max="365"
+                 class="w-full rounded-md border p-2 text-sm" />
+        </label>
+      </div>
+    </section>
+
+    <!-- Step 2: Preferred concepts -->
+    <section class="rounded-xl border bg-white p-4">
+      <div class="flex items-center justify-between">
+        <h2 class="font-bold">Step 2 — Pick a few concepts</h2>
+        <div class="flex gap-2">
+          <button id="obAll"  class="px-2 py-1 rounded border text-xs">Select all</button>
+          <button id="obNone" class="px-2 py-1 rounded border text-xs">None</button>
+        </div>
+      </div>
+      <p class="text-slate-600 text-sm mb-2">You can change this anytime on the main page.</p>
+      <div id="obConcepts" class="grid gap-2 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 text-sm"></div>
+    </section>
+
+    <!-- Actions -->
+    <section class="flex gap-3">
+      <a href="/index.html" class="px-4 py-2 rounded-md border text-sm">Skip</a>
+      <button id="obSave" class="px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-semibold">
+        Save & Continue
+      </button>
+    </section>
+  </main>
+
+  <script type="module">
+    const trackEl = document.getElementById('obTrack');
+    const daysEl  = document.getElementById('obDays');
+    const grid    = document.getElementById('obConcepts');
+
+    async function loadConcepts() {
+      const t  = trackEl.value;
+      const qs = t === 'all' ? '' : `?track=${encodeURIComponent(t)}`;
+      const res = await fetch(`/api/concepts${qs}`);
+      const data = await res.json();
+      grid.innerHTML = data.concepts.map(c => `
+        <label class="flex items-center gap-2">
+          <input type="checkbox" name="concept" value="${c}" class="accent-blue-600">
+          <span>${c.replaceAll('_',' ')}</span>
+        </label>
+      `).join('');
+    }
+
+    function getSelectedConcepts() {
+      return Array.from(document.querySelectorAll('input[name="concept"]:checked')).map(x => x.value);
+    }
+
+    document.getElementById('obAll').addEventListener('click', () => {
+      document.querySelectorAll('input[name="concept"]').forEach(el => el.checked = true);
+    });
+    document.getElementById('obNone').addEventListener('click', () => {
+      document.querySelectorAll('input[name="concept"]').forEach(el => el.checked = false);
+    });
+
+    document.getElementById('obSave').addEventListener('click', () => {
+      const prefs = {
+        track: trackEl.value,
+        days:  Math.min(365, Math.max(1, parseInt(daysEl.value || '14', 10))),
+        concepts: getSelectedConcepts()
+      };
+      localStorage.setItem('benkyou:prefs', JSON.stringify(prefs));
+      location.href = '/index.html';
+    });
+
+    trackEl.addEventListener('change', loadConcepts);
+
+    // Load initial concepts and pre-fill if returning
+    const saved = JSON.parse(localStorage.getItem('benkyou:prefs') || 'null');
+    if (saved) {
+      trackEl.value = saved.track || 'commerce';
+      daysEl.value  = saved.days  || 14;
+    }
+    await loadConcepts();
+    if (saved?.concepts?.length) {
+      const set = new Set(saved.concepts);
+      document.querySelectorAll('input[name="concept"]').forEach(el => { el.checked = set.has(el.value); });
+    }
+  </script>
+</body>
+</html>

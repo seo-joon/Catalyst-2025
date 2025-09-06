@@ -29,6 +29,14 @@ function updateSelectedCount() {
   if (selectedCountEl) selectedCountEl.textContent = `${n} selected`;
 }
 
+// Add this near the top, before loadConcepts()/fetchExamples() calls:
+const savedPrefs = JSON.parse(localStorage.getItem('benkyou:prefs') || 'null');
+if (savedPrefs) {
+  if (savedPrefs.track) trackEl.value = savedPrefs.track;
+  if (savedPrefs.days)  daysEl.value  = savedPrefs.days;
+}
+
+
 async function loadConcepts() {
   const t = trackEl.value;
   const qs = t === 'all' ? '' : `?track=${t}`;
@@ -115,4 +123,10 @@ selectNoneBtn.addEventListener('click', () => {
 
 // init
 await loadConcepts();
+
+if (savedPrefs?.concepts?.length) {
+  const set = new Set(savedPrefs.concepts);
+  document.querySelectorAll('input[name="concept"]').forEach(el => { el.checked = set.has(el.value); });
+}
+
 await fetchExamples();
