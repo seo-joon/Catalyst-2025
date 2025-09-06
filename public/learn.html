@@ -33,14 +33,15 @@
         </div>
 
         <!-- Concepts (floating popover) -->
-        <div class="md:col-span-6 relative">
-          <button id="conceptsToggle" type="button"
-                  class="mt-6 inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm bg-white"
-                  aria-haspopup="dialog" aria-expanded="false">
-            Concepts (multi-select)
-            <span class="text-slate-500">•</span>
-            <span id="selectedCount" class="text-slate-500">0 selected</span>
-          </button>
+        <div class="md:col-span-6 relative self-end">
+        <label class="block text-xs font-medium text-slate-600 mb-1">Filter strictly for</label>
+        <button id="conceptsToggle" type="button"
+                class="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm bg-white"
+                aria-haspopup="dialog" aria-expanded="false">
+          Concepts      
+          <span class="text-slate-500">•</span>
+          <span id="selectedCount" class="text-slate-500">0 selected</span>
+        </button>
 
           <!-- Popover -->
           <div id="conceptPopover"
