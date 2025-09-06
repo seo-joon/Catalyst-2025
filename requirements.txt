@@ -1,4 +1,5 @@
 python-dateutil
+python-multipart
 fastapi
 uvicorn
 feedparser

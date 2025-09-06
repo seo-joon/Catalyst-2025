@@ -96,7 +96,7 @@ def serve_learn(request: Request):
     return FileResponse(str(STATIC_DIR / "learn.html"))
 
 # --- login (admin/admin; newuser always to onboarding) ---
-@app.post("/auth/login")
+@app.post("/login")
 async def auth_login(request: Request):
     username = password = ""
     ctype = request.headers.get("content-type", "")
