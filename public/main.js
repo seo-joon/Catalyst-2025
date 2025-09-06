@@ -4,7 +4,6 @@ const daysEl       = document.getElementById('days');
 const resultsEl    = document.getElementById('results');
 const refreshBtn   = document.getElementById('refresh');
 const clearBtn     = document.getElementById('clear');
-// NEW:
 const exportBtn    = document.getElementById('exportAnki');
 
 const conceptsToggle = document.getElementById('conceptsToggle');

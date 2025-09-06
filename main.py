@@ -107,7 +107,7 @@ def login_get(request: Request):
         return RedirectResponse("/learn.html", status_code=302)
     return FileResponse(str(STATIC_DIR / "login.html"))
 
-# --- login (uses python-multipart via Form) ---
+# --- login ---
 # Accept both /login and /auth/login for POST
 @app.post("/login")
 @app.post("/auth/login")
@@ -116,12 +116,12 @@ async def auth_login(
     username: str = Form(...),
     password: str = Form(...),
 ):
-    # Always log in "newuser" and send to onboarding
+    # "newuser" gets sent to onboarding, simulating new user experience
     if username.lower() == "newuser":
         request.session["user"] = {"login": username, "name": username}
         return RedirectResponse("/onboarding.html", status_code=303)
 
-    # Fixed creds: admin / terry   (change 'terry' to 'admin' if you want admin/admin)
+    # Fixed creds: admin / terry
     if username == "admin" and password == "terry":
         request.session["user"] = {"login": username, "name": username}
         return RedirectResponse("/learn.html", status_code=303)
