@@ -1,8 +1,9 @@
 {
-  "functions": {
-    "api/index.py": {
-      "runtime": "python3.11",
-      "includeFiles": "public/**"
+    "version": 2,
+        "functions": {
+        "api/index.py": {
+        "runtime": "python3.11",
+        "includeFiles": "public/**"
+        }
     }
-  }
 }
