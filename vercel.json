@@ -1,9 +1,12 @@
 {
-    "version": 2,
-        "functions": {
-        "api/index.py": {
-        "runtime": "@vercel/python@5.0.0",
-        "includeFiles": "public/**"
-        }
+  "version": 2,
+  "functions": {
+    "api/index.py": {
+      "runtime": "vercel-python@5.0.0",
+      "includeFiles": "public/**"
     }
+  },
+  "routes": [
+    { "src": "/(.*)", "dest": "api/index.py" }
+  ]
 }
