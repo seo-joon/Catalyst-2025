@@ -11,6 +11,7 @@ from fastapi.staticfiles import StaticFiles
 import feedparser
 from dateutil import parser as dtparse
 
+# --- paths ---
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "public"
 
@@ -21,6 +22,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 from starlette.middleware.sessions import SessionMiddleware
 app.add_middleware(
     SessionMiddleware,
@@ -33,7 +35,7 @@ app.add_middleware(
 def ping():
     return {"ok": True}
 
-# --- your existing SOURCES / CONCEPTS unchanged ---
+# --- Sources / Concepts ---
 SOURCES = [
     ("Reuters Business", "https://feeds.reuters.com/reuters/businessNews"),
     ("ACCC Media Releases", "https://www.accc.gov.au/rss/media_releases.xml"),
@@ -76,7 +78,7 @@ def match_concepts(text: str):
                 break
     return sorted(matched)
 
-# --- landing & guarding learn.html (you renamed index.html -> learn.html) ---
+# --- landing & guards ---
 @app.get("/")
 def landing(request: Request):
     u = request.session.get("user")
@@ -95,37 +97,38 @@ def serve_learn(request: Request):
         return RedirectResponse("/onboarding.html", status_code=302)
     return FileResponse(str(STATIC_DIR / "learn.html"))
 
-# --- login (admin/admin; newuser always to onboarding) ---
-@app.post("/login")
-async def auth_login(request: Request):
-    username = password = ""
-    ctype = request.headers.get("content-type", "")
-    if "application/x-www-form-urlencoded" in ctype:
-        body = (await request.body()).decode("utf-8", "ignore")
-        data = {k: v[0] for k, v in parse_qs(body).items()}
-        username = (data.get("username") or "").strip()
-        password = (data.get("password") or "").strip()
-    else:
-        # Fallback: JSON payloads (Postman etc.)
-        try:
-            data = await request.json()
-        except Exception:
-            data = {}
-        username = (data.get("username") or "").strip()
-        password = (data.get("password") or "").strip()
+# When you visit /login directly:
+# - if logged in -> route to onboarding/learn
+# - else -> show login page
+@app.get("/login")
+def login_get(request: Request):
+    u = request.session.get("user")
+    if u:
+        if u.get("login", "").lower() == "newuser":
+            return RedirectResponse("/onboarding.html", status_code=302)
+        return RedirectResponse("/learn.html", status_code=302)
+    return FileResponse(str(STATIC_DIR / "login.html"))
 
-    # Special rule: newuser is always sent to onboarding (but is logged in)
+# --- login (uses python-multipart via Form) ---
+# Accept both /login and /auth/login for POST
+@app.post("/login")
+@app.post("/auth/login")
+async def auth_login(
+    request: Request,
+    username: str = Form(...),
+    password: str = Form(...),
+):
+    # Always log in "newuser" and send to onboarding
     if username.lower() == "newuser":
         request.session["user"] = {"login": username, "name": username}
         return RedirectResponse("/onboarding.html", status_code=303)
 
-    # Fixed creds
+    # Fixed creds: admin / terry   (change 'terry' to 'admin' if you want admin/admin)
     if username == "admin" and password == "terry":
         request.session["user"] = {"login": username, "name": username}
         return RedirectResponse("/learn.html", status_code=303)
 
     return RedirectResponse("/login.html?error=1", status_code=303)
-
 
 @app.post("/logout")
 @app.get("/logout")
