@@ -10,7 +10,9 @@
   <header class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b">
     <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
       <h1 class="text-xl font-extrabold">benkyou.</h1>
-      <nav class="text-xs text-slate-600">Connecting classroom concepts to events happening today.</nav>
+      <nav class="text-xs text-slate-600" id="authArea">
+        <a href="/login.html" class="text-blue-600 hover:underline">Sign in</a>
+      </nav>
     </div>
   </header>
 
@@ -61,8 +63,12 @@
 
 
         <div class="md:col-span-12 flex gap-2">
-          <button id="refresh" type="button" class="px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-semibold">Fetch</button>
+          <button id="refresh" type="button"
+                  class="px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-semibold">Fetch</button>
           <button id="clear" type="button" class="px-4 py-2 rounded-md border text-sm">Clear</button>
+          <!-- NEW -->
+          <button id="exportAnki" type="button"
+                  class="px-4 py-2 rounded-md border text-sm">Export to Anki (CSV)</button>
         </div>
       </div>
     </div>

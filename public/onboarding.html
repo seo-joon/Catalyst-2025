@@ -10,7 +10,7 @@
   <header class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b">
     <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
       <h1 class="text-xl font-extrabold">benkyou.</h1>
-      <nav class="text-xs text-slate-600">Let’s set your defaults</nav>
+      <nav class="text-xs text-slate-600" id="authArea">Let’s set your defaults</nav>
     </div>
   </header>
 
@@ -110,5 +110,29 @@
       document.querySelectorAll('input[name="concept"]').forEach(el => { el.checked = set.has(el.value); });
     }
   </script>
+
+  <script type="module">
+    async function renderAuth() {
+        try {
+        const res = await fetch('/api/session', { credentials: 'include' });
+        const data = await res.json();
+        const el = document.getElementById('authArea');
+        if (!el) return;
+        if (data.authenticated) {
+            const u = data.user || {};
+            el.innerHTML = `
+            <span class="inline-flex items-center gap-2">
+                <span>Hi, ${u.name || u.login}</span>
+                <form method="post" action="/logout">
+                <button class="ml-2 text-red-600 hover:underline" type="submit">Logout</button>
+                </form>
+            </span>`;
+        } else {
+            el.textContent = 'Let’s set your defaults';
+        }
+        } catch {}
+    }
+    await renderAuth();
+    </script>
 </body>
 </html>
