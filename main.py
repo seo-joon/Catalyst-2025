@@ -1,6 +1,7 @@
 import os, re
 from datetime import datetime, timedelta, timezone
 from typing import Optional, List
+from pathlib import Path
 
 from fastapi import FastAPI, Query, Request, Form
 from fastapi.responses import RedirectResponse, FileResponse, JSONResponse
@@ -9,6 +10,9 @@ from fastapi.staticfiles import StaticFiles
 
 import feedparser
 from dateutil import parser as dtparse
+
+BASE_DIR = Path(__file__).resolve().parent
+STATIC_DIR = BASE_DIR / "public"
 
 app = FastAPI(title="benkyou.")
 app.add_middleware(
@@ -89,7 +93,7 @@ def serve_learn(request: Request):
         return RedirectResponse("/login.html", status_code=302)
     if u.get("login", "").lower() == "newuser":
         return RedirectResponse("/onboarding.html", status_code=302)
-    return FileResponse("public/learn.html")
+    return FileResponse(str(STATIC_DIR / "learn.html"))
 
 # --- login (admin/admin; newuser always to onboarding) ---
 @app.post("/auth/login")
@@ -186,4 +190,4 @@ def examples(
     return results[:limit]
 
 # --- static ---
-app.mount("/", StaticFiles(directory="public", html=True), name="static")
+app.mount("/", StaticFiles(directory=str(STATIC_DIR), html=True), name="static")
