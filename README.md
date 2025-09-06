@@ -6,3 +6,9 @@ Package installation:
 Local testing:
 - uvicorn main:app --reload --port 8000
 
+Website:
+- https://catalyst-2025.vercel.app/
+
+Logins:
+- admin:terry for existing user
+- newuser:{any text} for new user 
