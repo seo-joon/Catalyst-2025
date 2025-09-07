@@ -94,7 +94,12 @@ async function fetchExamples() {
   params.set('days', String(Math.min(365, Math.max(1, d))));
   params.set('limit', '30');
 
-  resultsEl.innerHTML = '<div class="text-slate-500">Loading…</div>';
+  resultsEl.innerHTML = `
+  <div class="text-slate-500">
+    <img src="/images/cherry-blossoms-6383_256.gif" 
+         alt="Loading..." 
+         style="width: 50px; height: 50px;" />
+  </div>`;
   const res = await fetch(`/api/examples?${params.toString()}`);
   const items = await res.json();
 
